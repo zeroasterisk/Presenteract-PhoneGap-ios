@@ -111,6 +111,30 @@
 
 /* Comment out the block below to over-ride */
 
+
+/**
+ * WIP debugging a URL redirection issue caused by oAuth
+ *   App -> Google (etc) -> App
+ *                       ^ getting NSURLErrorDomain -999
+ * http://stackoverflow.com/questions/16441984/phonegap-ios-oauth-redirect-failing-nsurlerrordomain-error-999
+ */
+- (void) webView:(UIWebView*)theWebView didFailLoadWithError:(NSError*)error
+{
+    /* (this does log to the console, but doesn't tell me anything different)
+    * still: theWebView webView didFailLoadWithError:NSURLErrorDomain -999
+    */
+    NSLog(@"theWebView webView didFailLoadWithError:%@ %d",error.domain,error.code);
+
+    /* (this is commented out, it didn't seem to do anything for me) */
+    if ([error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -999) {
+        NSLog(@"theWebView webView caught the error=-999... but returning void doesn't force the page to reload/continue:%@ %d",error.domain,error.code);
+        return;
+    }
+
+    /* (this was already here, part of PhoneGap) */
+    return [super webView:theWebView didFailLoadWithError:error];
+}
+
 /*
 
 - (void) webViewDidStartLoad:(UIWebView*)theWebView
